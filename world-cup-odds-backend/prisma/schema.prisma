@@ -1,0 +1,371 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Tournament {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique // e.g. "World Cup 2026"
+  country   String?
+  matches   Match[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Team {
+  id           Int            @id @default(autoincrement())
+  name         String         @unique
+  code         String?        @unique // e.g. "ARG", "FRA"
+  logo         String?
+  homeMatches  Match[]        @relation("HomeTeam")
+  awayMatches  Match[]        @relation("AwayTeam")
+  events       MatchEvent[]
+  stats        TeamStats[]
+  h2hAsTeam1   H2HRecord[]    @relation("H2HTeam1")
+  h2hAsTeam2   H2HRecord[]    @relation("H2HTeam2")
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+}
+
+model Match {
+  id           Int           @id @default(autoincrement())
+  externalId   String        @unique // ID from external API (Flashscore/API-Football)
+  tournamentId Int
+  homeTeamId   Int
+  awayTeamId   Int
+  startTime    DateTime
+  status       String        // e.g. "NS" (Not Started), "LIVE", "FT"
+  
+  // Statistical aggregations for structural shock modeling
+  homeScore    Int           @default(0)
+  awayScore    Int           @default(0)
+  homeCorners  Int           @default(0)
+  awayCorners  Int           @default(0)
+  homeRedCards Int           @default(0)
+  awayRedCards Int           @default(0)
+
+  tournament   Tournament    @relation(fields: [tournamentId], references: [id])
+  homeTeam     Team          @relation("HomeTeam", fields: [homeTeamId], references: [id])
+  awayTeam     Team          @relation("AwayTeam", fields: [awayTeamId], references: [id])
+  odds         Odds[]
+  oddsHistory  OddsHistory[]
+  events       MatchEvent[]
+  matchStats   MatchStats?
+  predictions  Prediction[]
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model MatchEvent {
+  id          Int      @id @default(autoincrement())
+  matchId     Int
+  teamId      Int?
+  type        String   // "CORNER", "RED_CARD", "YELLOW_CARD", "GOAL"
+  minute      Int
+  player      String?
+  
+  match       Match    @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  team        Team?    @relation(fields: [teamId], references: [id])
+
+  createdAt   DateTime @default(now())
+}
+
+// ==========================================
+// ODDS & ODDS HISTORY
+// ==========================================
+
+model Odds {
+  id          Int      @id @default(autoincrement())
+  matchId     Int
+  bookmaker   String   // e.g. "Pinnacle", "Bet365"
+  type        String   // e.g. "h2h", "spreads", "totals"
+  
+  // For 1X2 (h2h)
+  homeWin     Float?
+  draw        Float?
+  awayWin     Float?
+
+  // For Asian Handicap & Over/Under
+  handicap    String?  // e.g. "-1.5", "2.5"
+  over        Float?
+  under       Float?
+
+  // Opening Odds (kèo mở cửa ban đầu - rất quan trọng cho CLV analysis)
+  openingHomeWin  Float?
+  openingDraw     Float?
+  openingAwayWin  Float?
+  openingOver     Float?
+  openingUnder    Float?
+  isOpeningSet    Boolean  @default(false) // Đã capture opening odds chưa
+
+  match       Match    @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([matchId, bookmaker, type, handicap]) // Ensure unique odds type per match/bookmaker
+}
+
+model OddsHistory {
+  id          Int      @id @default(autoincrement())
+  matchId     Int
+  bookmaker   String
+  type        String
+  handicap    String?
+  
+  // Previous values
+  oldHomeWin  Float?
+  oldDraw     Float?
+  oldAwayWin  Float?
+  oldOver     Float?
+  oldUnder    Float?
+
+  // New values
+  newHomeWin  Float?
+  newDraw     Float?
+  newAwayWin  Float?
+  newOver     Float?
+  newUnder    Float?
+
+  match       Match    @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  
+  createdAt   DateTime @default(now()) // Timestamp of the change
+}
+
+// ==========================================
+// MATCH STATISTICS (Chi tiết thống kê trận đấu)
+// ==========================================
+
+model MatchStats {
+  id                Int    @id @default(autoincrement())
+  matchId           Int    @unique
+  
+  // Possession & Shots
+  homePossession    Float?
+  awayPossession    Float?
+  homeShots         Int?
+  awayShots         Int?
+  homeShotsOnTarget Int?
+  awayShotsOnTarget Int?
+  
+  // Cards
+  homeYellowCards   Int    @default(0)
+  awayYellowCards   Int    @default(0)
+  
+  // Corners
+  homeCorners       Int    @default(0)
+  awayCorners       Int    @default(0)
+  
+  // Fouls
+  homeFouls         Int?
+  awayFouls         Int?
+  
+  // Advanced (nếu API hỗ trợ)
+  homeXG            Float? // Expected Goals
+  awayXG            Float?
+
+  match             Match  @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  createdAt         DateTime @default(now())
+}
+
+// ==========================================
+// TEAM STATISTICS (Sức mạnh & Phong độ đội bóng)
+// ==========================================
+
+model TeamStats {
+  id                  Int      @id @default(autoincrement())
+  teamId              Int
+  snapshotDate        DateTime // Ngày snapshot (track theo thời gian)
+  
+  // Ranking
+  fifaRanking         Int?
+  eloRating           Float?
+  
+  // Form (tự tính từ Match data)
+  formLast5           String?  // e.g. "WWDLW"
+  formLast10          String?  // e.g. "WWDLWWWDLL"
+  formPoints5         Float?   // Điểm form: W=3, D=1, L=0 → trung bình
+  formPoints10        Float?
+  
+  // Goal Stats  
+  avgGoalsScored5     Float?  // Trung bình bàn thắng 5 trận
+  avgGoalsConceded5   Float?  // Trung bình bàn thua 5 trận
+  avgGoalsScored10    Float?
+  avgGoalsConceded10  Float?
+  
+  // Home/Away specific
+  homeWinRate         Float?
+  awayWinRate         Float?
+  homeAvgGoals        Float?
+  awayAvgGoals        Float?
+  
+  // Discipline
+  avgYellowCards      Float?
+  avgRedCards         Float?
+  avgCorners          Float?
+  avgFouls            Float?
+  
+  // Advanced
+  avgPossession       Float?
+  avgShots            Float?
+  avgShotsOnTarget    Float?
+  cleanSheetRate      Float?
+  bttsRate            Float?  // Both Teams To Score rate
+
+  team                Team     @relation(fields: [teamId], references: [id])
+  createdAt           DateTime @default(now())
+
+  @@unique([teamId, snapshotDate])
+}
+
+// ==========================================
+// HEAD-TO-HEAD RECORD (Lịch sử đối đầu)
+// ==========================================
+
+model H2HRecord {
+  id              Int      @id @default(autoincrement())
+  team1Id         Int
+  team2Id         Int
+  
+  // Aggregated stats
+  totalMatches    Int      @default(0)
+  team1Wins       Int      @default(0)
+  team2Wins       Int      @default(0)
+  draws           Int      @default(0)
+  team1Goals      Int      @default(0)
+  team2Goals      Int      @default(0)
+  
+  // Last 5 H2H
+  last5Matches    String?  @db.Text // JSON array of recent results
+  last5Team1Goals Int      @default(0)
+  last5Team2Goals Int      @default(0)
+  
+  team1           Team     @relation("H2HTeam1", fields: [team1Id], references: [id])
+  team2           Team     @relation("H2HTeam2", fields: [team2Id], references: [id])
+  
+  updatedAt       DateTime @updatedAt
+
+  @@unique([team1Id, team2Id])
+}
+
+// ==========================================
+// PREDICTION (Kết quả dự đoán)
+// ==========================================
+
+model Prediction {
+  id                    Int      @id @default(autoincrement())
+  matchId               Int
+  modelVersion          String   // e.g. "hybrid_v1.0"
+  
+  // 1X2 Probabilities
+  homeWinProb           Float
+  drawProb              Float
+  awayWinProb           Float
+  
+  // Predicted Score
+  predictedHomeScore    Int
+  predictedAwayScore    Int
+  scoreProbability      Float?   // Xác suất của tỷ số dự đoán
+  
+  // Asian Handicap
+  asianHandicap         String?  // e.g. "-0.5"
+  ahHomeProb            Float?
+  ahAwayProb            Float?
+  
+  // Over/Under
+  overUnderLine         Float?   // e.g. 2.5
+  overProb              Float?
+  underProb             Float?
+  
+  // Cards & Corners
+  predictedYellowCards  Float?
+  ycOver35Prob          Float?   // P(Yellow Cards > 3.5)
+  predictedCorners      Float?
+  cornersOver95Prob     Float?   // P(Corners > 9.5)
+  
+  // BTTS
+  bttsProb              Float?
+  
+  // Confidence & Meta
+  confidence            Float    // 0-1
+  dixonColesContrib     Float?   // % contribution from Dixon-Coles
+  oddsMarketContrib     Float?   // % contribution from Odds Market
+  mlModelContrib        Float?   // % contribution from ML Model
+  
+  // Dixon-Coles breakdown
+  dcHomeProb            Float?
+  dcDrawProb            Float?
+  dcAwayProb            Float?
+  
+  // Odds Market breakdown
+  omHomeProb            Float?
+  omDrawProb            Float?
+  omAwayProb            Float?
+  
+  // ML Model breakdown
+  mlHomeProb            Float?
+  mlDrawProb            Float?
+  mlAwayProb            Float?
+  
+  // Value Betting
+  valueBetType          String?  // "HOME", "DRAW", "AWAY", "OVER", "UNDER"
+  valueBetEdge          Float?   // Expected value edge
+  kellyFraction         Float?   // Kelly criterion bet fraction
+  
+  match                 Match    @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  createdAt             DateTime @default(now())
+
+  @@unique([matchId, modelVersion])
+}
+
+// ==========================================
+// MODEL METRICS (Đo lường hiệu suất model)
+// ==========================================
+
+model ModelMetrics {
+  id              Int      @id @default(autoincrement())
+  modelVersion    String
+  evaluationDate  DateTime
+  
+  // Classification Metrics
+  accuracy        Float?
+  precision       Float?
+  recall          Float?
+  f1Score         Float?
+  
+  // Probabilistic Metrics (QUAN TRỌNG hơn accuracy)
+  brierScore      Float?   // Càng thấp càng tốt (< 0.25 là tốt)
+  rps             Float?   // Ranked Probability Score
+  logLoss         Float?
+  
+  // Betting Metrics
+  roiSimulated    Float?   // ROI nếu đặt cược theo model
+  winRate         Float?
+  clvAvg          Float?   // Average Closing Line Value
+  
+  // Sample Info
+  totalMatches    Int
+  correctPredictions Int?
+  
+  details         String?  @db.Text // JSON chi tiết
+
+  createdAt       DateTime @default(now())
+}
+
+// ==========================================
+// CRAWLER LOG
+// ==========================================
+
+model CrawlerLog {
+  id        Int      @id @default(autoincrement())
+  runAt     DateTime @default(now())
+  status    String   // "SUCCESS", "FAILED"
+  matches   Int      @default(0) // Matches processed
+  odds      Int      @default(0) // Odds processed
+  changes   Int      @default(0) // Odds changes detected
+  error     String?  @db.Text
+}

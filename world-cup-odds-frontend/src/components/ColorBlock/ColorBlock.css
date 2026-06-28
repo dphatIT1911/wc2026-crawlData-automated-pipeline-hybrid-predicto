@@ -1,0 +1,56 @@
+.color-block {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  border-radius: var(--rounded-lg);
+  padding: var(--spacing-xxl);
+  margin-bottom: var(--spacing-section);
+  /* The typography defaults for blocks are typically subhead style */
+  font-size: var(--typography-subhead-size);
+  font-weight: var(--typography-subhead-weight);
+  line-height: var(--typography-subhead-line-height);
+  letter-spacing: var(--typography-subhead-letter-spacing);
+}
+
+/* On mobile, blocks lose rounding and go full bleed */
+@media (max-width: 768px) {
+  .color-block {
+    border-radius: 0;
+    padding: var(--spacing-xl) var(--spacing-lg);
+  }
+}
+
+.color-block-lime {
+  background-color: var(--colors-block-lime);
+  color: var(--colors-ink);
+}
+
+.color-block-lilac {
+  background-color: var(--colors-block-lilac);
+  color: var(--colors-ink);
+}
+
+.color-block-cream {
+  background-color: var(--colors-block-cream);
+  color: var(--colors-ink);
+}
+
+.color-block-pink {
+  background-color: var(--colors-block-pink);
+  color: var(--colors-ink);
+}
+
+.color-block-mint {
+  background-color: var(--colors-block-mint);
+  color: var(--colors-ink);
+}
+
+.color-block-coral {
+  background-color: var(--colors-block-coral);
+  color: var(--colors-ink);
+}
+
+.color-block-navy {
+  background-color: var(--colors-block-navy);
+  color: var(--colors-inverse-ink); /* Inverse text on dark block */
+}

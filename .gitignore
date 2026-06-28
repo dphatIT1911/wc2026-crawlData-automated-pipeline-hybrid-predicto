@@ -1,0 +1,31 @@
+# Node dependencies
+**/node_modules/
+**/dist/
+**/*.tsbuildinfo
+
+# Python dependencies
+**/__pycache__/
+**/*.pyc
+**/*.pyo
+**/*.pyd
+**/.venv/
+**/venv/
+**/ENV/
+
+# Model folders
+**/prediction-engine/models/
+
+# Environment variables
+**/.env
+
+# Local test/log files
+**/*.log
+**/scratch_*.js
+**/check_*.js
+**/check_*.py
+**/test_*.js
+**/test_*.py
+**/dump.js
+**/cleanup.js
+**/cleanup2.js
+**/db_dump.json

@@ -1,0 +1,33 @@
+node_modules
+# Keep environment variables out of version control
+.env
+
+/generated/prisma
+/dist
+*.tsbuildinfo
+
+# Python artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.venv/
+venv/
+ENV/
+
+# Model folders
+prediction-engine/models/
+
+# Scratch & log files
+*.log
+scratch_*.js
+check_*.js
+check_*.py
+test_*.js
+test_*.py
+dump.js
+cleanup.js
+cleanup2.js
+db_dump.json
+
