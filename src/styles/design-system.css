@@ -1,0 +1,135 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&family=JetBrains+Mono:wght@400&display=swap');
+
+:root {
+  /* Colors */
+  --colors-primary: #000000;
+  --colors-on-primary: #ffffff;
+  --colors-ink: #000000;
+  --colors-canvas: #ffffff;
+  --colors-inverse-canvas: #000000;
+  --colors-inverse-ink: #ffffff;
+  --colors-on-inverse-soft: rgba(255, 255, 255, 0.16);
+  --colors-hairline: #e6e6e6;
+  --colors-hairline-soft: #f1f1f1;
+  --colors-surface-soft: #f7f7f5;
+  --colors-block-lime: #dceeb1;
+  --colors-block-lilac: #c5b0f4;
+  --colors-block-cream: #f4ecd6;
+  --colors-block-pink: #efd4d4;
+  --colors-block-mint: #c8e6cd;
+  --colors-block-coral: #f3c9b6;
+  --colors-block-navy: #1f1d3d;
+  --colors-accent-magenta: #ff3d8b;
+  --colors-semantic-success: #1ea64a;
+  --colors-overlay-scrim: rgba(0, 0, 0, 0.6);
+
+  /* Typography */
+  --font-sans: 'Inter', system-ui, sans-serif; /* fallback for figmaSans */
+  --font-mono: 'JetBrains Mono', monospace; /* fallback for figmaMono */
+
+  --typography-display-xl-size: 86px;
+  --typography-display-xl-weight: 300;
+  --typography-display-xl-line-height: 1.00;
+  --typography-display-xl-letter-spacing: -1.72px;
+
+  --typography-display-lg-size: 64px;
+  --typography-display-lg-weight: 300;
+  --typography-display-lg-line-height: 1.10;
+  --typography-display-lg-letter-spacing: -0.96px;
+
+  --typography-headline-size: 26px;
+  --typography-headline-weight: 500;
+  --typography-headline-line-height: 1.35;
+  --typography-headline-letter-spacing: -0.26px;
+
+  --typography-subhead-size: 26px;
+  --typography-subhead-weight: 300;
+  --typography-subhead-line-height: 1.35;
+  --typography-subhead-letter-spacing: -0.26px;
+
+  --typography-card-title-size: 24px;
+  --typography-card-title-weight: 700;
+  --typography-card-title-line-height: 1.45;
+  --typography-card-title-letter-spacing: 0;
+
+  --typography-body-lg-size: 20px;
+  --typography-body-lg-weight: 300;
+  --typography-body-lg-line-height: 1.40;
+  --typography-body-lg-letter-spacing: -0.14px;
+
+  --typography-body-size: 18px;
+  --typography-body-weight: 300;
+  --typography-body-line-height: 1.45;
+  --typography-body-letter-spacing: -0.26px;
+
+  --typography-body-sm-size: 16px;
+  --typography-body-sm-weight: 300;
+  --typography-body-sm-line-height: 1.45;
+  --typography-body-sm-letter-spacing: -0.14px;
+
+  --typography-link-size: 20px;
+  --typography-link-weight: 500;
+  --typography-link-line-height: 1.40;
+  --typography-link-letter-spacing: -0.10px;
+
+  --typography-button-size: 20px;
+  --typography-button-weight: 500;
+  --typography-button-line-height: 1.40;
+  --typography-button-letter-spacing: -0.10px;
+
+  --typography-eyebrow-size: 18px;
+  --typography-eyebrow-weight: 400;
+  --typography-eyebrow-line-height: 1.30;
+  --typography-eyebrow-letter-spacing: 0.54px;
+
+  --typography-caption-size: 12px;
+  --typography-caption-weight: 400;
+  --typography-caption-line-height: 1.00;
+  --typography-caption-letter-spacing: 0.60px;
+
+  /* Rounded */
+  --rounded-xs: 2px;
+  --rounded-sm: 6px;
+  --rounded-md: 8px;
+  --rounded-lg: 24px;
+  --rounded-xl: 32px;
+  --rounded-pill: 50px;
+  --rounded-full: 9999px;
+
+  /* Spacing */
+  --spacing-hair: 1px;
+  --spacing-xxs: 4px;
+  --spacing-xs: 8px;
+  --spacing-sm: 12px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-xxl: 48px;
+  --spacing-section: 96px;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--colors-canvas);
+  color: var(--colors-ink);
+  margin: 0;
+  padding: 0;
+  font-weight: var(--typography-body-weight);
+  font-size: var(--typography-body-size);
+  line-height: var(--typography-body-line-height);
+  letter-spacing: var(--typography-body-letter-spacing);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+* {
+  box-sizing: border-box;
+}

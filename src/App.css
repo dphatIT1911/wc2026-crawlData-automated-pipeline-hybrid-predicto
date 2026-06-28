@@ -1,0 +1,46 @@
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.top-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+  background-color: var(--colors-canvas);
+  color: var(--colors-ink);
+  padding: 0 var(--spacing-xl);
+  font-size: var(--typography-body-sm-size);
+  border-bottom: 1px solid var(--colors-hairline-soft);
+}
+
+.logo-placeholder {
+  font-weight: 700;
+  font-size: var(--typography-body-lg-size);
+}
+
+.nav-actions {
+  display: flex;
+  gap: var(--spacing-md);
+}
+
+.marquee-strip {
+  height: 36px;
+  background-color: var(--colors-inverse-canvas);
+  color: var(--colors-inverse-ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--typography-body-sm-size);
+  font-family: var(--font-mono);
+  letter-spacing: var(--typography-eyebrow-letter-spacing);
+  text-transform: uppercase;
+  margin-bottom: var(--spacing-xxl);
+}
+
+.content {
+  flex: 1;
+  width: 100%;
+}

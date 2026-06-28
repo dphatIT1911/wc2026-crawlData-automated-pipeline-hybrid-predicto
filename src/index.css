@@ -1,0 +1,8 @@
+@import './styles/design-system.css';
+
+/* Any global overrides can go here */
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
