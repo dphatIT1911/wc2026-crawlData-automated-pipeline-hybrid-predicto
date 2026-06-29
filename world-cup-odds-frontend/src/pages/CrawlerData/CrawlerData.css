@@ -1,4 +1,92 @@
 .crawler-page {
+  padding: 0;
+  min-height: 100vh;
+  background: var(--colors-canvas);
+  color: var(--colors-ink);
+}
+
+.crawler-list {
+  padding: 0 var(--spacing-xxl) var(--spacing-section);
+}
+
+/* Table - Reused pattern from Dashboard but scoped or duplicated for standalone usage */
+.table-container {
+  overflow-x: auto;
+  border-radius: var(--rounded-md);
+  border: var(--spacing-hair) solid var(--colors-hairline);
+  background: var(--colors-canvas);
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.data-table thead tr {
+  background: var(--colors-surface-soft);
+}
+
+.data-table th {
+  text-align: left;
+  padding: var(--spacing-md);
+  font-family: var(--font-mono);
+  font-size: var(--typography-caption-size);
+  font-weight: var(--typography-caption-weight);
+  letter-spacing: var(--typography-caption-letter-spacing);
+  text-transform: uppercase;
+  color: var(--colors-ink);
+  border-bottom: var(--spacing-hair) solid var(--colors-hairline);
+}
+
+.data-table td {
+  padding: var(--spacing-md);
+  border-bottom: var(--spacing-hair) solid var(--colors-hairline-soft);
+  color: var(--colors-ink);
+  font-size: var(--typography-body-sm-size);
+  font-weight: var(--typography-body-sm-weight);
+  line-height: var(--typography-body-sm-line-height);
+  vertical-align: middle;
+}
+
+.data-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Badges */
+.badge {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: var(--typography-caption-size);
+  font-weight: var(--typography-caption-weight);
+  padding: 4px 10px;
+  border-radius: var(--rounded-pill);
+  letter-spacing: var(--typography-caption-letter-spacing);
+  text-transform: uppercase;
+}
+
+.badge-neutral { background: var(--colors-surface-soft); color: var(--colors-ink); border: 1px solid var(--colors-hairline); }
+.badge-success { background: var(--colors-block-lime); color: var(--colors-ink); border: 1px solid var(--colors-hairline); }
+
+.match-title {
+  font-weight: 500;
+}
+
+/* States */
+.loading-state, .empty-state {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-section) var(--spacing-lg);
+  gap: var(--spacing-md);
+  text-align: center;
+  background: var(--colors-surface-soft);
+  border-radius: var(--rounded-md);
+  margin-bottom: var(--spacing-section);
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+}
+
+@media (max-width: 768px) {
+  .crawler-list { padding: 0 var(--spacing-lg) var(--spacing-lg); }
 }

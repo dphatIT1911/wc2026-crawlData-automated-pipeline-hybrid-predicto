@@ -18,6 +18,8 @@ export class CrawlerService implements OnModuleInit {
   private readonly THE_ODDS_API_URL = 'https://api.the-odds-api.com/v4/sports';
   private readonly SPORT_KEY = 'soccer_fifa_world_cup'; // FIFA World Cup
 
+  private isCrawling = false;
+
   constructor(private prisma: PrismaService) {}
 
   // Auto-run crawler on startup to ensure fresh data (run in background)
@@ -28,8 +30,14 @@ export class CrawlerService implements OnModuleInit {
       .catch(error => this.logger.error('Initial crawl failed:', error));
   }
 
-  @Cron('0 3,12,18,21 * * *')
+  @Cron('0 3,12,18,21 * * *', { timeZone: 'Asia/Ho_Chi_Minh' })
   async handleCron() {
+    if (this.isCrawling) {
+      this.logger.warn('Crawler is already running. Skipping this schedule.');
+      return;
+    }
+    
+    this.isCrawling = true;
     this.logger.log('Starting scheduled crawling (3:00, 12:00, 18:00, 21:00)...');
     const startTime = Date.now();
     let crawlerLog = { matches: 0, odds: 0, changes: 0, status: 'SUCCESS', error: null };
@@ -57,6 +65,7 @@ export class CrawlerService implements OnModuleInit {
       this.logger.error('Failed to save crawler log', e.message);
     }
 
+    this.isCrawling = false;
     this.logger.log(`Crawl finished in ${Date.now() - startTime}ms`);
   }
 

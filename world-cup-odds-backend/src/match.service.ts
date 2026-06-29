@@ -7,6 +7,9 @@ export class MatchService {
 
   async getAllMatches() {
     return this.prisma.match.findMany({
+      where: {
+        tournament: { name: 'World Cup 2026' }
+      },
       include: {
         homeTeam: true,
         awayTeam: true,
