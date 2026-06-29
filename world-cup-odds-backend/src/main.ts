@@ -11,7 +11,7 @@ async function bootstrap() {
     ...(process.env.FRONTEND_URL ? process.env.FRONTEND_URL.split(',').map(u => u.trim()) : []),
   ];
   app.enableCors({
-    origin: (origin, callback) => {
+    origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
       // Allow requests with no origin (mobile apps, curl, etc.) or from allowed origins
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
