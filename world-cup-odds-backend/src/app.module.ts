@@ -9,12 +9,14 @@ import { CrawlerService } from './crawler.service';
 import { CrawlerController } from './crawler.controller';
 import { PredictionController } from './prediction.controller';
 import { PredictionService } from './prediction.service';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
 
 @Module({
   imports: [
     ScheduleModule.forRoot()
   ],
-  controllers: [MatchController, OddsController, CrawlerController, PredictionController],
-  providers: [MatchService, OddsService, PrismaService, CrawlerService, PredictionService],
+  controllers: [AppController, MatchController, OddsController, CrawlerController, PredictionController],
+  providers: [AppService, MatchService, OddsService, PrismaService, CrawlerService, PredictionService],
 })
 export class AppModule {}
