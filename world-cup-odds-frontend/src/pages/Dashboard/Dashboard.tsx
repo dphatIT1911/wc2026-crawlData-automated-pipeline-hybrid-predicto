@@ -128,7 +128,7 @@ export const Dashboard: React.FC = () => {
           <div className="error-state">
             <div className="error-icon">⚠️</div>
             <p>{error}</p>
-            <code>GET http://localhost:3000/matches</code>
+            <code>GET {API_URL}/matches</code>
           </div>
         ) : upcomingMatches.length === 0 ? (
           <div className="empty-state">
