@@ -24,10 +24,29 @@ export class CrawlerService implements OnModuleInit {
 
   // Auto-run crawler on startup to ensure fresh data (run in background)
   async onModuleInit() {
-    this.logger.log('Backend started! Running initial data crawl in background...');
-    this.crawlMatchesAndOdds()
-      .then(() => this.logger.log('Initial crawl completed successfully.'))
-      .catch(error => this.logger.error('Initial crawl failed:', error));
+    this.logger.log('Backend started! Scheduling initial data crawl in background after 10 seconds...');
+    // Add a slight delay so the server can finish booting up before we block the event loop heavily
+    setTimeout(() => {
+      this.runCrawlerWithRetry(3);
+    }, 10000);
+  }
+
+  private async runCrawlerWithRetry(retries: number) {
+    for (let i = 0; i < retries; i++) {
+      try {
+        this.logger.log(`Initial crawl attempt ${i + 1}/${retries}...`);
+        await this.crawlMatchesAndOdds();
+        this.logger.log('Initial crawl completed successfully.');
+        return;
+      } catch (error) {
+        this.logger.error(`Initial crawl attempt ${i + 1} failed:`, error.message);
+        if (i < retries - 1) {
+          this.logger.log(`Waiting 30 seconds before retry...`);
+          await new Promise(res => setTimeout(res, 30000));
+        }
+      }
+    }
+    this.logger.error('All initial crawl attempts failed.');
   }
 
   @Cron('0 3,12,18,21 * * *', { timeZone: 'Asia/Ho_Chi_Minh' })

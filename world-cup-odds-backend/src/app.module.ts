@@ -9,6 +9,12 @@ import { CrawlerService } from './crawler.service';
 import { CrawlerController } from './crawler.controller';
 import { PredictionController } from './prediction.controller';
 import { PredictionService } from './prediction.service';
+import { AnalyticsController } from './analytics.controller';
+import { AnalyticsService } from './analytics.service';
+import { HistoryController } from './history.controller';
+import { HistoryService } from './history.service';
+import { SettingsController } from './settings.controller';
+import { SettingsService } from './settings.service';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
@@ -16,7 +22,26 @@ import { AppService } from './app.service';
   imports: [
     ScheduleModule.forRoot()
   ],
-  controllers: [AppController, MatchController, OddsController, CrawlerController, PredictionController],
-  providers: [AppService, MatchService, OddsService, PrismaService, CrawlerService, PredictionService],
+  controllers: [
+    AppController, 
+    MatchController, 
+    OddsController, 
+    CrawlerController, 
+    PredictionController,
+    AnalyticsController,
+    HistoryController,
+    SettingsController
+  ],
+  providers: [
+    AppService, 
+    MatchService, 
+    OddsService, 
+    PrismaService, 
+    CrawlerService, 
+    PredictionService,
+    AnalyticsService,
+    HistoryService,
+    SettingsService
+  ],
 })
 export class AppModule {}

@@ -112,8 +112,50 @@ export const Dashboard: React.FC = () => {
         </div>
       </div>
 
+      {/* Live Matches Table (if any) */}
+      {stats.live > 0 && (
+        <div className="section-card mb-4">
+          <div className="section-header">
+            <h2 className="section-title">Đang diễn ra</h2>
+            <span className="section-count">{stats.live} trận</span>
+          </div>
+          <div className="table-container">
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Thời gian</th>
+                  <th>Trận đấu</th>
+                  <th>Trạng thái</th>
+                  <th>Tỷ số</th>
+                </tr>
+              </thead>
+              <tbody>
+                {matches.filter(m => m.status === 'LIVE' || m.status === 'HT').map((m, idx) => (
+                  <tr key={m.id}>
+                    <td className="cell-num">{idx + 1}</td>
+                    <td className="cell-date">{formatDate(m.startTime)}</td>
+                    <td className="cell-match">
+                      <span className="team-name">{m.homeTeam?.name ?? '?'}</span>
+                      <span className="vs-divider">vs</span>
+                      <span className="team-name">{m.awayTeam?.name ?? '?'}</span>
+                    </td>
+                    <td>{statusBadge(m.status)}</td>
+                    <td className="cell-score">
+                      {m.homeScore != null && m.awayScore != null
+                        ? `${m.homeScore} - ${m.awayScore}`
+                        : '— : —'}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
       {/* Upcoming Matches Table */}
-      <div className="section-card">
+      <div className="section-card mb-4">
         <div className="section-header">
           <h2 className="section-title">Trận đấu sắp tới</h2>
           <span className="section-count">{stats.upcoming} trận</span>
@@ -149,6 +191,53 @@ export const Dashboard: React.FC = () => {
               </thead>
               <tbody>
                 {upcomingMatches.map((m, idx) => (
+                  <tr key={m.id}>
+                    <td className="cell-num">{idx + 1}</td>
+                    <td className="cell-date">{formatDate(m.startTime)}</td>
+                    <td className="cell-match">
+                      <span className="team-name">{m.homeTeam?.name ?? '?'}</span>
+                      <span className="vs-divider">vs</span>
+                      <span className="team-name">{m.awayTeam?.name ?? '?'}</span>
+                    </td>
+                    <td>{statusBadge(m.status)}</td>
+                    <td className="cell-score">
+                      {m.homeScore != null && m.awayScore != null
+                        ? `${m.homeScore} - ${m.awayScore}`
+                        : '— : —'}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+
+      {/* Recent Matches Table */}
+      <div className="section-card">
+        <div className="section-header">
+          <h2 className="section-title">Kết quả gần đây</h2>
+          <span className="section-count">{stats.finished} trận</span>
+        </div>
+        {matches.filter(m => m.status === 'FT').length === 0 ? (
+          <div className="empty-state">
+            <div className="empty-icon">📭</div>
+            <p>Chưa có trận đấu nào kết thúc.</p>
+          </div>
+        ) : (
+          <div className="table-container">
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Thời gian</th>
+                  <th>Trận đấu</th>
+                  <th>Trạng thái</th>
+                  <th>Tỷ số</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[...matches].filter(m => m.status === 'FT').reverse().slice(0, 8).map((m, idx) => (
                   <tr key={m.id}>
                     <td className="cell-num">{idx + 1}</td>
                     <td className="cell-date">{formatDate(m.startTime)}</td>

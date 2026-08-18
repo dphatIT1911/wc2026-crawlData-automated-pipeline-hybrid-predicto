@@ -12,20 +12,28 @@
 **/venv/
 **/ENV/
 
-# Model folders
+# Model artifacts (large binary files)
 **/prediction-engine/models/
+**/*.pkl
 
-# Environment variables
+# Environment variables (NEVER commit real .env files)
 **/.env
+**/.env.*
+!**/.env.example
 
-# Local test/log files
+# Logs
 **/*.log
-**/scratch_*.js
-**/check_*.js
-**/check_*.py
-**/test_*.js
-**/test_*.py
-**/dump.js
-**/cleanup.js
-**/cleanup2.js
+**/logs/
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Data dumps & large JSON data files
 **/db_dump.json
+**/historical_matches.json
+
+# Build artifacts
+**/coverage/

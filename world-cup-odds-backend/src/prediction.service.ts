@@ -10,14 +10,16 @@ export class PredictionService {
    * Get prediction for a specific match from Python prediction engine.
    */
   async predictMatch(matchId: number, modelType: string = 'hybrid') {
+    const url = `${this.PREDICTION_ENGINE_URL}/prediction/match/${matchId}`;
     try {
-      const resp = await axios.get(`${this.PREDICTION_ENGINE_URL}/prediction/match/${matchId}`, {
+      this.logger.debug(`Calling prediction engine at: ${url}`);
+      const resp = await axios.get(url, {
         params: { model_type: modelType },
         timeout: 30000,
       });
       return resp.data;
     } catch (error) {
-      this.logger.error(`Failed to get prediction for match ${matchId}: ${error.message}`);
+      this.logger.error(`Failed to get prediction for match ${matchId} at ${url}: ${error.message}`);
       throw new Error(`Prediction service unavailable: ${error.message}`);
     }
   }
@@ -26,14 +28,16 @@ export class PredictionService {
    * Get predictions for all upcoming matches.
    */
   async predictUpcoming(modelType: string = 'hybrid') {
+    const url = `${this.PREDICTION_ENGINE_URL}/prediction/upcoming`;
     try {
-      const resp = await axios.get(`${this.PREDICTION_ENGINE_URL}/prediction/upcoming`, {
+      this.logger.debug(`Calling prediction engine at: ${url}`);
+      const resp = await axios.get(url, {
         params: { model_type: modelType },
         timeout: 60000,
       });
       return resp.data;
     } catch (error) {
-      this.logger.error(`Failed to get upcoming predictions: ${error.message}`);
+      this.logger.error(`Failed to get upcoming predictions at ${url}: ${error.message}`);
       throw new Error(`Prediction service unavailable: ${error.message}`);
     }
   }

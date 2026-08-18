@@ -83,6 +83,7 @@ export const Predictions: React.FC = () => {
                 <tr>
                   <th>Trận đấu</th>
                   <th>Dự đoán (1X2)</th>
+                  <th>Độ tin cậy</th>
                   <th>Value Bets (Kelly)</th>
                   <th>Hành động</th>
                 </tr>
@@ -104,6 +105,31 @@ export const Predictions: React.FC = () => {
                           Draw: {match.prediction ? (match.prediction.draw_probability * 100).toFixed(1) : '0.0'}% <br/>
                           Away: {match.prediction ? (match.prediction.away_win_probability * 100).toFixed(1) : '0.0'}%
                         </div>
+                      )}
+                    </td>
+                    <td>
+                      {match.prediction && match.prediction.confidence ? (
+                        <div className="confidence-indicator">
+                           <div className="confidence-bar" style={{ 
+                             width: '100%', 
+                             backgroundColor: '#e0e0e0',
+                             height: '8px', 
+                             borderRadius: '4px',
+                             marginTop: '4px'
+                           }}>
+                             <div style={{
+                               width: `${match.prediction.confidence * 100}%`,
+                               backgroundColor: match.prediction.confidence > 0.7 ? '#4caf50' : match.prediction.confidence > 0.4 ? '#ff9800' : '#f44336',
+                               height: '100%',
+                               borderRadius: '4px'
+                             }}></div>
+                           </div>
+                           <span style={{ fontSize: '0.85em', color: '#666' }}>
+                             {(match.prediction.confidence * 100).toFixed(1)}%
+                           </span>
+                        </div>
+                      ) : (
+                        <span style={{ color: '#aaa' }}>N/A</span>
                       )}
                     </td>
                     <td>

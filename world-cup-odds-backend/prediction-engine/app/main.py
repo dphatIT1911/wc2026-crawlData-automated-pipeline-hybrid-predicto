@@ -13,6 +13,11 @@ load_dotenv()
 
 from .database import get_db, engine
 from .predictor import HybridPredictor
+import logging
+import traceback
+
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 app = FastAPI(
     title="Football Prediction Engine",
@@ -39,18 +44,23 @@ def predict_match(match_id: int, model_type: str = "hybrid", db: Session = Depen
     Generate prediction for a specific match.
     model_type: 'hybrid' or 'rule_based'
     """
-    if model_type == "rule_based":
-        from .predictor import FeatureEngineer, OddsAnalyzer
-        predictor = RuleBasedPredictor(db, OddsAnalyzer(), FeatureEngineer(db))
-        result = predictor.predict(match_id)
-    else:
-        predictor = HybridPredictor(db, model_dir="models")
-        result = predictor.predict(match_id)
-    
-    if 'error' in result:
-        raise HTTPException(status_code=404, detail=result['error'])
-    
-    return result
+    try:
+        if model_type == "rule_based":
+            from .predictor import FeatureEngineer, OddsAnalyzer
+            predictor = RuleBasedPredictor(db, OddsAnalyzer(), FeatureEngineer(db))
+            result = predictor.predict(match_id)
+        else:
+            predictor = HybridPredictor(db, model_dir="models")
+            result = predictor.predict(match_id)
+        
+        if 'error' in result:
+            logger.error(f"Prediction error for match {match_id}: {result['error']}")
+            raise HTTPException(status_code=404, detail=result['error'])
+        
+        return result
+    except Exception as e:
+        logger.error(f"Failed to predict match {match_id}: {str(e)}\n{traceback.format_exc()}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @app.get("/prediction/upcoming")
@@ -78,6 +88,7 @@ def predict_upcoming(model_type: str = "hybrid", db: Session = Depends(get_db)):
             pred = predictor.predict(match.id)
             predictions.append(pred)
         except Exception as e:
+            logger.error(f"Failed to predict match {match.id}: {str(e)}")
             predictions.append({
                 'matchId': match.id,
                 'error': str(e),

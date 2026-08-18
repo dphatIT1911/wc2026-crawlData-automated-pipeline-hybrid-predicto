@@ -369,3 +369,13 @@ model CrawlerLog {
   changes   Int      @default(0) // Odds changes detected
   error     String?  @db.Text
 }
+
+// ==========================================
+// SYSTEM SETTINGS
+// ==========================================
+
+model SystemSetting {
+  key       String   @id
+  value     String   @db.Text
+  updatedAt DateTime @updatedAt
+}
