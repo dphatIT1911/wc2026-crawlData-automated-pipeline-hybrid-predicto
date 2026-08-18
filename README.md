@@ -31,29 +31,40 @@ This project is a **full-stack sports analytics platform** built around the FIFA
 
 ## 🏗️ System Architecture
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                        React / Vite Frontend                    │
-│          Dashboard · Predictions · Analytics · History          │
-└────────────────────────────┬────────────────────────────────────┘
-                             │ REST API
-┌────────────────────────────▼────────────────────────────────────┐
-│                      NestJS Backend (Node.js)                   │
-│                                                                 │
-│  ┌──────────────┐  ┌─────────────┐  ┌────────────────────────┐  │
-│  │ CrawlerService│  │  Prediction  │  │  Analytics / History │  │
-│  │  (Cron Jobs) │  │  Controller  │  │  Controllers          │  │
-│  └──────┬───────┘  └──────┬──────┘  └──────────┬─────────────┘  │
-│         │                 │                     │                │
-│  ┌──────▼─────────────────▼─────────────────────▼──────────── ┐ │
-│  │                 Prisma ORM  ←→  PostgreSQL DB              │ │
-│  └────────────────────────────────────────────────────────────┘ │
-│         │                 │                                      │
-│  ┌──────▼──────┐  ┌───────▼──────────────────────────────────── ┐ │
-│  │ API-Football│  │         Python Prediction Engine             │ │
-│  │ The Odds API│  │  (FastAPI + Dixon-Coles + CatBoost + Market) │ │
-│  └─────────────┘  └────────────────────────────────────────────┘ │
-└─────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    FE["🖥️ React / Vite Frontend\nDashboard · Predictions · Analytics · History"]
+
+    subgraph BE["⚙️ NestJS Backend (Node.js)"]
+        CS["🔄 CrawlerService\n(Cron Jobs: 4×/day)"]
+        PC["🎯 Prediction\nController"]
+        AC["📊 Analytics / History\nControllers"]
+        DB[("🗄️ PostgreSQL DB\n(via Prisma ORM)")]
+
+        CS --> DB
+        PC --> DB
+        AC --> DB
+    end
+
+    subgraph PE["🤖 Python Prediction Engine (FastAPI)"]
+        DC["Dixon-Coles\nStatistical Model\n30%"]
+        CB["CatBoost\nML Model\n30%"]
+        OA["Odds Market\nIntelligence\n40%"]
+        HY["⚡ HybridPredictor\nEnsemble Orchestrator"]
+
+        DC --> HY
+        CB --> HY
+        OA --> HY
+    end
+
+    EXT1["🌐 API-Football v3\n(Fixtures · Scores · Stats)"]
+    EXT2["📈 The Odds API v4\n(20+ Bookmakers)"]
+
+    FE <-->|REST API| BE
+    CS -->|"HTTP crawl"| EXT1
+    CS -->|"HTTP crawl"| EXT2
+    PC <-->|"HTTP / subprocess"| PE
+    DB -->|"SQLAlchemy"| PE
 ```
 
 ---
