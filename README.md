@@ -2,7 +2,7 @@
 
 # ⚽ WC2026 Hybrid Match Predictor
 
-**Real-time FIFA World Cup 2026 match outcome prediction system**  
+**FIFA World Cup 2026 match outcome prediction system**  
 powered by an automated data pipeline and a three-model ensemble AI engine.
 
 [![NestJS](https://img.shields.io/badge/NestJS-11-E0234E?style=flat-square&logo=nestjs&logoColor=white)](https://nestjs.com/)
@@ -40,18 +40,18 @@ This project is a **full-stack sports analytics platform** built around the FIFA
 ┌────────────────────────────▼────────────────────────────────────┐
 │                      NestJS Backend (Node.js)                   │
 │                                                                 │
-│  ┌──────────────┐  ┌─────────────┐  ┌────────────────────────┐ │
-│  │ CrawlerService│  │  Prediction  │  │  Analytics / History   │ │
-│  │  (Cron Jobs) │  │  Controller  │  │  Controllers           │ │
-│  └──────┬───────┘  └──────┬──────┘  └──────────┬─────────────┘ │
-│         │                 │                     │               │
-│  ┌──────▼─────────────────▼─────────────────────▼────────────┐  │
-│  │                 Prisma ORM  ←→  PostgreSQL DB              │  │
-│  └────────────────────────────────────────────────────────────┘  │
+│  ┌──────────────┐  ┌─────────────┐  ┌────────────────────────┐  │
+│  │ CrawlerService│  │  Prediction  │  │  Analytics / History │  │
+│  │  (Cron Jobs) │  │  Controller  │  │  Controllers          │  │
+│  └──────┬───────┘  └──────┬──────┘  └──────────┬─────────────┘  │
+│         │                 │                     │                │
+│  ┌──────▼─────────────────▼─────────────────────▼──────────── ┐ │
+│  │                 Prisma ORM  ←→  PostgreSQL DB              │ │
+│  └────────────────────────────────────────────────────────────┘ │
 │         │                 │                                      │
-│  ┌──────▼──────┐  ┌───────▼────────────────────────────────────┐ │
-│  │ API-Football│  │         Python Prediction Engine            │ │
-│  │ The Odds API│  │  (FastAPI + Dixon-Coles + CatBoost + Market)│ │
+│  ┌──────▼──────┐  ┌───────▼──────────────────────────────────── ┐ │
+│  │ API-Football│  │         Python Prediction Engine             │ │
+│  │ The Odds API│  │  (FastAPI + Dixon-Coles + CatBoost + Market) │ │
 │  └─────────────┘  └────────────────────────────────────────────┘ │
 └─────────────────────────────────────────────────────────────────┘
 ```
